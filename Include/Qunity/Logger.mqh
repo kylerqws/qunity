@@ -31,8 +31,9 @@ namespace Qunity
             if (level == LOG_LEVEL_ERROR)
                 logMessage = GetErrorMessage(logMessage, GetLastError());
 
-            return StringFormat("[%s] %s: %s", TimeToString(TimeLocal()), LogLevelStrings[level],
-                                (Identity != NULL) ? StringFormat("%s: %s", Identity, logMessage) : logMessage);
+            logMessage = (Identity != NULL) ? StringFormat("%s: %s", Identity, logMessage) : logMessage;
+
+            return StringFormat("[%s] %s: %s", TimeToString(TimeLocal()), LogLevelStrings[level], logMessage);
         };
 
     public:
