@@ -60,7 +60,7 @@ int OnInit(void)
     {
         IndicatorSetString(INDICATOR_SHORTNAME, SHORT_NAME " ∷ Failed to initialize indicator core");
 
-        return Error("Failed to initialize {indicator}", INIT_FAILED);
+        return Error("Failed to initialize %indicator", INIT_FAILED);
     };
 
     ShortName = OHLCSeries.GetName();
@@ -83,7 +83,7 @@ int OnInit(void)
         LevelLowName = PrepareObjectName(StringFormat("%s ∷ Low", ShortName));
 
         if (!CreateLevelObject(LevelHighName) || !CreateLevelObject(LevelLowName))
-            Info("Non-critical error in {indicator}");
+            Info("Non-critical error in %indicator");
     };
 
     return INIT_SUCCEEDED;
@@ -96,7 +96,7 @@ void OnDeinit(const int reason)
 {
     if (ShowLevels)
         if (!RemoveLevelObject(LevelHighName) || !RemoveLevelObject(LevelLowName))
-            Info("Non-critical error in {indicator}");
+            Info("Non-critical error in %indicator");
 };
 
 //+--------------------------------------------------------------------------------------------------------------------+
@@ -130,7 +130,7 @@ int OnCalculate(
     while (index < rates_total && !IsStopped())
     {
         if (!OHLCSeries.Refresh(time[index], open[index], high[index], low[index], close[index]))
-            return Error("Failed to refresh {indicator}", index);
+            return Error("Failed to refresh %indicator", index);
 
         ColorBuffer[index] = OHLCSeries.GetState() + 1;
 
@@ -148,11 +148,11 @@ int OnCalculate(
 
         if (HighBuffer[jndex] != LastLevelHigh)
             if (!MoveLevelObject(LevelHighName, (LastLevelHigh = HighBuffer[jndex])))
-                Info("Non-critical error in {indicator}");
+                Info("Non-critical error in %indicator");
 
         if (LowBuffer[jndex] != LastLevelLow)
             if (!MoveLevelObject(LevelLowName, (LastLevelLow = LowBuffer[jndex])))
-                Info("Non-critical error in {indicator}");
+                Info("Non-critical error in %indicator");
     };
 
     return Calculateed = index;
@@ -167,7 +167,9 @@ void Log(const Qunity::ENUM_LOG_LEVELS level, const string message)
         return;
 
     string logMessage = message;
-    StringReplace(logMessage, "{indicator}", INDICATOR_NAME " indicator");
+
+    StringReplace(logMessage, "%shortname", SHORT_NAME);
+    StringReplace(logMessage, "%indicator", INDICATOR_NAME " indicator");
 
     Logger.Log(level, logMessage);
 };
@@ -205,7 +207,7 @@ bool CreateLevelObject(const string name)
 {
     ResetLastError();
     if (!ObjectCreate(0, name, OBJ_HLINE, 0, 0, 0.0))
-        return (bool)Error("Failed to create level in {indicator}", false);
+        return (bool)Error("Failed to create level in %indicator", false);
 
     ObjectSetInteger(0, name, OBJPROP_COLOR, LevelColor);
     ObjectSetInteger(0, name, OBJPROP_STYLE, LevelStyle);
@@ -223,7 +225,7 @@ bool MoveLevelObject(const string name, const double price)
 {
     ResetLastError();
     if (!ObjectMove(0, name, 0, 0, price))
-        return (bool)Error("Failed to move level in {indicator}", false);
+        return (bool)Error("Failed to move level in %indicator", false);
 
     ChartRedraw();
 
@@ -237,7 +239,7 @@ bool RemoveLevelObject(const string name)
 {
     ResetLastError();
     if (!ObjectDelete(0, name))
-        return (bool)Error("Failed to remove level in {indicator}", false);
+        return (bool)Error("Failed to remove level in %indicator", false);
 
     ChartRedraw();
 
