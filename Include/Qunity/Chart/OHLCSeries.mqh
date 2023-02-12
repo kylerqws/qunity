@@ -126,6 +126,7 @@ namespace Qunity
                 if (StringReplace(result, "PERIOD_", "") < 1)
                 {
                     Error("Failed to replace substring 'PERIOD_' to empty string", __FUNCTION__);
+
                     return NULL;
                 };
 
