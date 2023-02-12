@@ -132,7 +132,7 @@ namespace Qunity
                 return result;
             };
 
-            void ForceUpdateOHLC(const MqlOHLCRequest &request)
+            const bool ForceUpdateOHLC(const MqlOHLCRequest &request)
             {
                 Times[OHLC_INDEX_OPEN] = request.Time;
                 Prices[OHLC_INDEX_OPEN] = request.Open;
@@ -145,29 +145,31 @@ namespace Qunity
 
                 Times[OHLC_INDEX_CLOSE] = request.Time;
                 Prices[OHLC_INDEX_CLOSE] = request.Close;
+
+                return true;
             };
 
-            void RegularUpdateOHLC(const MqlOHLCRequest &request)
+            const bool RegularUpdateOHLC(const MqlOHLCRequest &request)
             {
                 if (Prices[OHLC_INDEX_OPEN] == 0.0)
-                    ForceUpdateOHLC(request);
-                else
+                    return ForceUpdateOHLC(request);
+
+                if (Prices[OHLC_INDEX_HIGH] <= request.High)
                 {
-                    if (Prices[OHLC_INDEX_HIGH] <= request.High)
-                    {
-                        Times[OHLC_INDEX_HIGH] = request.Time;
-                        Prices[OHLC_INDEX_HIGH] = request.High;
-                    };
-
-                    if (Prices[OHLC_INDEX_LOW] >= request.Low)
-                    {
-                        Times[OHLC_INDEX_LOW] = request.Time;
-                        Prices[OHLC_INDEX_LOW] = request.Low;
-                    };
-
-                    Times[OHLC_INDEX_CLOSE] = request.Time;
-                    Prices[OHLC_INDEX_CLOSE] = request.Close;
+                    Times[OHLC_INDEX_HIGH] = request.Time;
+                    Prices[OHLC_INDEX_HIGH] = request.High;
                 };
+
+                if (Prices[OHLC_INDEX_LOW] >= request.Low)
+                {
+                    Times[OHLC_INDEX_LOW] = request.Time;
+                    Prices[OHLC_INDEX_LOW] = request.Low;
+                };
+
+                Times[OHLC_INDEX_CLOSE] = request.Time;
+                Prices[OHLC_INDEX_CLOSE] = request.Close;
+
+                return true;
             };
 
             virtual const bool SaveLastOHLC(void)
@@ -193,11 +195,9 @@ namespace Qunity
             virtual const bool UpdateOHLC(void)
             {
                 if (NewBarFlags[AREA_INDEX_ENTITY])
-                    ForceUpdateOHLC(Request);
-                else
-                    RegularUpdateOHLC(Request);
+                    return ForceUpdateOHLC(Request);
 
-                return true;
+                return RegularUpdateOHLC(Request);
             };
 
             virtual const bool SaveLastState(void)
