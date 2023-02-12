@@ -167,6 +167,7 @@ void Log(const Qunity::ENUM_LOG_LEVELS level, const string message)
         return;
 
     string logMessage = message;
+
     StringReplace(logMessage, "%indicator", INDICATOR_NAME " indicator");
 
     Logger.Log(level, logMessage);
