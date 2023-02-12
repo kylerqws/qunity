@@ -93,13 +93,10 @@ namespace Qunity
             {
                 if (ADXValue <= ADXFilter)
                     SetState(STATE_MISSING);
-                else
-                {
-                    if (PDIValue > NDIValue)
-                        SetState(STATE_BULLISH);
-                    else if (PDIValue < NDIValue)
-                        SetState(STATE_BEARISH);
-                };
+                else if (PDIValue > NDIValue)
+                    SetState(STATE_BULLISH);
+                else if (PDIValue < NDIValue)
+                    SetState(STATE_BEARISH);
 
                 return true;
             };
