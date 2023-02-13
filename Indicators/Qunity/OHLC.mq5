@@ -206,7 +206,7 @@ string PrepareObjectName(const string name)
 bool CreateLevelObject(const string name)
 {
     ResetLastError();
-    if (!ObjectCreate(0, name, OBJ_HLINE, 0, 0, 0.0))
+    if (!ObjectCreate(0, name, OBJ_HLINE, 0, NULL, 0.0))
         return (bool)Error("Failed to create level in %indicator", false);
 
     ObjectSetInteger(0, name, OBJPROP_COLOR, LevelColor);
@@ -224,7 +224,7 @@ bool CreateLevelObject(const string name)
 bool MoveLevelObject(const string name, const double price)
 {
     ResetLastError();
-    if (!ObjectMove(0, name, 0, 0, price))
+    if (!ObjectMove(0, name, 0, NULL, price))
         return (bool)Error("Failed to move level in %indicator", false);
 
     ChartRedraw();
