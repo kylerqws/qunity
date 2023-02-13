@@ -230,7 +230,7 @@ namespace Qunity
                 const uchar newSize = SizeLevels + 1;
 
                 ResetLastError();
-                if (ArrayResize(Levels, newSize, 35) < newSize)
+                if (ArrayResize(Levels, newSize, 42) < newSize)
                     return Error("Failed to resize 'Levels' array", __FUNCTION__);
 
                 Levels[newSize - 1] = level;
