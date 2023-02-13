@@ -12,7 +12,7 @@
 #define SHORT_NAME "ADXT"
 #define INDICATOR_NAME "Qunity ADXT"
 
-#property description INDICATOR_NAME " indicator is trend indicator based on the ADX / ADXWilder indicator"
+#property description INDICATOR_NAME " is trend indicator based on the ADX / ADXWilder indicator"
 
 #property indicator_separate_window
 #property indicator_minimum 0
