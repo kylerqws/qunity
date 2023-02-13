@@ -1,6 +1,6 @@
 //+--------------------------------------------------------------------------------------------------------------------+
 //|                                                                                                                    |
-//|                                                                                                           ADXT.mq5 |
+//|                                                                                                          ADXMT.mq5 |
 //|                                                                          Copyright 2022 - 2023, kyleRQWS@gmail.com |
 //|                                                                                            https://vk.com/kylerqws |
 //|                                                                                                                    |
@@ -9,14 +9,14 @@
 #property link "https://vk.com/kylerqws"
 #property version "1.00"
 
-#define SHORT_NAME "ADXT"
-#define INDICATOR_NAME "Qunity ADXT"
+#define SHORT_NAME "ADXMT"
+#define INDICATOR_NAME "Qunity ADXMT"
 
-#property description INDICATOR_NAME " is trend indicator based on the ADX / ADXWilder indicator"
+#property description INDICATOR_NAME " is multi-timeframe trend indicator based on the ADX / ADXWilder indicator"
 
 #property indicator_separate_window
 #property indicator_minimum 0
-#property indicator_buffers 7
+#property indicator_buffers 10
 #property indicator_plots 6
 
 #property indicator_label1 SHORT_NAME " ∷ Direction"
@@ -27,7 +27,7 @@
 
 #property indicator_label2 SHORT_NAME " ∷ Strength"
 #property indicator_type2 DRAW_COLOR_HISTOGRAM
-#property indicator_color2 clrRed, clrOrange, clrGreen
+#property indicator_color2 clrRed, clrOrange, clrGreen, clrDarkSalmon, clrGoldenrod, clrDarkKhaki
 #property indicator_style2 STYLE_SOLID
 #property indicator_width2 5
 
@@ -56,19 +56,33 @@
 #property indicator_width6 1
 
 #include <Qunity/Chart/ADXTrend.mqh>
+#include <Qunity/Chart/Tendency.mqh>
 
-input ENUM_TIMEFRAMES CalcTimeframe = PERIOD_CURRENT;                         // Calculate Timeframe
-input Qunity::Chart::ENUM_ADX_TYPES ADXType = Qunity::Chart::ADX_TYPE_WILDER; //   • ADX Type
-input int ADXPeriod = 14;                                                     //   • ADX Period
-input uchar ADXFilter = 15;                                                   //   • ADX Filter
-input Qunity::ENUM_LOG_LEVELS LogLevel = Qunity::LOG_LEVEL_NO;                // Logging
+input ENUM_TIMEFRAMES CalcTimeframe = PERIOD_CURRENT;                                         // Calculate Timeframe
+input Qunity::Chart::ENUM_TENDENCY_TYPES TendencyType = Qunity::Chart::TENDENCY_TYPE_IMPULSE; //   • Tendency Type
+input Qunity::Chart::ENUM_ADX_TYPES ADX0Type = Qunity::Chart::ADX_TYPE_WILDER;                // Config Screen Junior
+input int ADX0Period = 14;                                                                    //   • ADX Period
+input uchar ADX0Filter = 15;                                                                  //   • ADX Filter
+input bool ADX1Enabled = true;                                                                // Config Screen Middle
+input ENUM_TIMEFRAMES ADX1Timeframe = PERIOD_H4;                                              //   • Timeframe
+input Qunity::Chart::ENUM_ADX_TYPES ADX1Type = Qunity::Chart::ADX_TYPE_WILDER;                //   • ADX Type
+input int ADX1Period = 9;                                                                     //   • ADX Period
+input uchar ADX1Filter = 15;                                                                  //   • ADX Filter
+input bool ADX2Enabled = true;                                                                // Config Screen Senior
+input ENUM_TIMEFRAMES ADX2Timeframe = PERIOD_D1;                                              //   • Timeframe
+input Qunity::Chart::ENUM_ADX_TYPES ADX2Type = Qunity::Chart::ADX_TYPE_WILDER;                //   • ADX Type
+input int ADX2Period = 5;                                                                     //   • ADX Period
+input uchar ADX2Filter = 15;                                                                  //   • ADX Filter
+input Qunity::ENUM_LOG_LEVELS LogLevel = Qunity::LOG_LEVEL_NO;                                // Logging
 
 Qunity::CLogger Logger;
-Qunity::Chart::CADXTrend Trend;
+Qunity::Chart::CADXTrend Junior, Middle, Senior;
+Qunity::Chart::CTendency Tendency;
 
 int Calculateed = NULL;
 string ShortName = NULL;
 
+double BinaryStateBuffer[], TrendStateBuffer[], ImpulseStateBuffer[];
 double StateBuffer[], StrengthBuffer[], ColorBuffer[], OpenBuffer[], HighBuffer[], LowBuffer[], CloseBuffer[];
 
 //+--------------------------------------------------------------------------------------------------------------------+
@@ -79,22 +93,50 @@ int OnInit(void)
     Logger.SetIdentity(SHORT_NAME);
     Logger.SetLogLevel(LogLevel);
 
-    Trend.SetLogger(GetPointer(Logger));
-    Trend.SetEnabled(true);
-    Trend.SetTimeframe(CalcTimeframe);
+    Qunity::CLogger *logger = GetPointer(Logger);
 
-    Trend.SetADXType(ADXType);
-    Trend.SetADXPeriod(ADXPeriod);
-    Trend.SetADXFilter(ADXFilter);
+    Junior.SetLogger(logger);
+    Junior.SetEnabled(true);
+    Junior.SetTimeframe(CalcTimeframe);
 
-    if (!Trend.Init())
+    Junior.SetADXType(ADX0Type);
+    Junior.SetADXPeriod(ADX0Period);
+    Junior.SetADXFilter(ADX0Filter);
+
+    Middle.SetLogger(logger);
+    Middle.SetEnabled(ADX1Enabled);
+    Middle.SetTimeframe(ADX1Timeframe);
+
+    Middle.SetADXType(ADX1Type);
+    Middle.SetADXPeriod(ADX1Period);
+    Middle.SetADXFilter(ADX1Filter);
+
+    Senior.SetLogger(logger);
+    Senior.SetEnabled(ADX2Enabled);
+    Senior.SetTimeframe(ADX2Timeframe);
+
+    Senior.SetADXType(ADX2Type);
+    Senior.SetADXPeriod(ADX2Period);
+    Senior.SetADXFilter(ADX2Filter);
+
+    Tendency.SetLogger(logger);
+    Tendency.SetEnabled(true);
+    Tendency.SetTimeframe(CalcTimeframe);
+
+    Tendency.SetType(TendencyType);
+
+    Tendency.SetTrend(Qunity::Chart::SCREEN_JUNIOR, GetPointer(Junior));
+    Tendency.SetTrend(Qunity::Chart::SCREEN_MIDDLE, GetPointer(Middle));
+    Tendency.SetTrend(Qunity::Chart::SCREEN_SENIOR, GetPointer(Senior));
+
+    if (!Tendency.Init())
     {
         IndicatorSetString(INDICATOR_SHORTNAME, SHORT_NAME " ∷ Failed to initialize indicator core");
 
         return Error("Failed to initialize %indicator", INIT_FAILED);
     };
 
-    ShortName = Trend.GetName();
+    ShortName = Tendency.GetName();
     Logger.SetIdentity(ShortName);
 
     SetIndexBuffer(0, StateBuffer, INDICATOR_DATA);
@@ -104,6 +146,10 @@ int OnInit(void)
     SetIndexBuffer(4, HighBuffer, INDICATOR_DATA);
     SetIndexBuffer(5, LowBuffer, INDICATOR_DATA);
     SetIndexBuffer(6, CloseBuffer, INDICATOR_DATA);
+
+    SetIndexBuffer(7, BinaryStateBuffer, INDICATOR_CALCULATIONS);
+    SetIndexBuffer(8, TrendStateBuffer, INDICATOR_CALCULATIONS);
+    SetIndexBuffer(9, ImpulseStateBuffer, INDICATOR_CALCULATIONS);
 
     IndicatorSetInteger(INDICATOR_DIGITS, _Digits);
     IndicatorSetString(INDICATOR_SHORTNAME, StringFormat("%s ∷", ShortName));
@@ -145,22 +191,47 @@ int OnCalculate(
         ArrayInitialize(HighBuffer, EMPTY_VALUE);
         ArrayInitialize(LowBuffer, EMPTY_VALUE);
         ArrayInitialize(CloseBuffer, EMPTY_VALUE);
+
+        ArrayInitialize(BinaryStateBuffer, Qunity::Chart::STATE_MISSING);
+        ArrayInitialize(TrendStateBuffer, Qunity::Chart::STATE_MISSING);
+        ArrayInitialize(ImpulseStateBuffer, Qunity::Chart::STATE_MISSING);
     };
 
     int index = (prev_calculated > 0) ? prev_calculated - 1 : 0;
     while (index < rates_total && !IsStopped())
     {
-        if (!Trend.Refresh(time[index], open[index], high[index], low[index], close[index]))
+        if (!Tendency.Refresh(time[index], open[index], high[index], low[index], close[index]))
             return Error("Failed to refresh %indicator", index);
 
-        StateBuffer[index] = Trend.GetState();
-        StrengthBuffer[index] = Trend.GetStrength();
-        ColorBuffer[index] = Trend.GetState() + 1;
+        StateBuffer[index] = Tendency.GetState();
+        StrengthBuffer[index] = Tendency.GetStrength();
+        ColorBuffer[index] = Tendency.GetState() + 1;
 
-        OpenBuffer[index] = Trend.GetPrice(Qunity::Chart::OHLC_INDEX_OPEN);
-        HighBuffer[index] = Trend.GetPrice(Qunity::Chart::OHLC_INDEX_HIGH);
-        LowBuffer[index] = Trend.GetPrice(Qunity::Chart::OHLC_INDEX_LOW);
-        CloseBuffer[index] = Trend.GetPrice(Qunity::Chart::OHLC_INDEX_CLOSE);
+        OpenBuffer[index] = Tendency.GetPrice(Qunity::Chart::OHLC_INDEX_OPEN);
+        HighBuffer[index] = Tendency.GetPrice(Qunity::Chart::OHLC_INDEX_HIGH);
+        LowBuffer[index] = Tendency.GetPrice(Qunity::Chart::OHLC_INDEX_LOW);
+        CloseBuffer[index] = Tendency.GetPrice(Qunity::Chart::OHLC_INDEX_CLOSE);
+
+        BinaryStateBuffer[index] = Tendency.GetState(Qunity::Chart::STATE_INDEX_BINARY);
+        TrendStateBuffer[index] = Tendency.GetState(Qunity::Chart::STATE_INDEX_TREND);
+        ImpulseStateBuffer[index] = Tendency.GetState(Qunity::Chart::STATE_INDEX_IMPULSE);
+
+        if (TendencyType == Qunity::Chart::TENDENCY_TYPE_IMPULSE && index > 0)
+        {
+            int jndex = index;
+            const datetime startTime = Tendency.GetTime(Qunity::Chart::OHLC_INDEX_OPEN);
+
+            if (ImpulseStateBuffer[index] != Qunity::Chart::STATE_MISSING)
+                while (--jndex >= 0 && time[jndex] >= startTime && !IsStopped())
+                    ColorBuffer[jndex] = 4;
+
+            else if (TrendStateBuffer[index] != Qunity::Chart::STATE_MISSING)
+                ColorBuffer[index] = TrendStateBuffer[index] + 4;
+
+            if (TrendStateBuffer[index] == BinaryStateBuffer[index - 1])
+                while (--jndex >= 0 && ColorBuffer[jndex] == 1 && !IsStopped())
+                    ColorBuffer[jndex] = 4;
+        };
 
         index++;
     };
