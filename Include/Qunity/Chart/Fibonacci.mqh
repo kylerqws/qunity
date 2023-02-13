@@ -351,7 +351,7 @@ namespace Qunity
 
                 if (result == 0.0 && level != 0)
                 {
-                    string strLevel = LevelToString(level);
+                    const string strLevel = LevelToString(level);
 
                     if (strLevel == NULL)
                     {
