@@ -371,7 +371,7 @@ namespace Qunity
                 return SizeLevels;
             };
 
-            const bool CopyLevels(ENUM_FIBO_LEVELS &levels[])
+            const bool CopyLevels(ENUM_FIBO_LEVELS &levels[]) const
             {
                 ArrayFree(levels);
 
