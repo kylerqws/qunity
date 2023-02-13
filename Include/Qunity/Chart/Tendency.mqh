@@ -81,21 +81,17 @@ namespace Qunity
 
             const bool UpdateState(void)
             {
-                CTrend *junior = Trends[SCREEN_JUNIOR];
-                CTrend *middle = Trends[SCREEN_MIDDLE];
-                CTrend *senior = Trends[SCREEN_SENIOR];
-
                 States[STATE_INDEX_TREND] = STATE_MISSING;
 
                 if (
-                    junior.GetState() == STATE_BULLISH &&
-                    (!middle.IsEnabled() || middle.GetState() == STATE_BULLISH) &&
-                    (!senior.IsEnabled() || senior.GetState() == STATE_BULLISH))
+                    Trends[SCREEN_JUNIOR].GetState() == STATE_BULLISH &&
+                    (!Trends[SCREEN_MIDDLE].IsEnabled() || Trends[SCREEN_MIDDLE].GetState() == STATE_BULLISH) &&
+                    (!Trends[SCREEN_SENIOR].IsEnabled() || Trends[SCREEN_SENIOR].GetState() == STATE_BULLISH))
                     States[STATE_INDEX_TREND] = STATE_BULLISH;
                 else if (
-                    junior.GetState() == STATE_BEARISH &&
-                    (!middle.IsEnabled() || middle.GetState() == STATE_BEARISH) &&
-                    (!senior.IsEnabled() || senior.GetState() == STATE_BEARISH))
+                    Trends[SCREEN_JUNIOR].GetState() == STATE_BEARISH &&
+                    (!Trends[SCREEN_MIDDLE].IsEnabled() || Trends[SCREEN_MIDDLE].GetState() == STATE_BEARISH) &&
+                    (!Trends[SCREEN_SENIOR].IsEnabled() || Trends[SCREEN_SENIOR].GetState() == STATE_BEARISH))
                     States[STATE_INDEX_TREND] = STATE_BEARISH;
 
                 StateChanges[STATE_INDEX_TREND] =
@@ -173,17 +169,13 @@ namespace Qunity
 
             const string CreateName(void) const
             {
-                CTrend *junior = Trends[SCREEN_JUNIOR];
-                CTrend *middle = Trends[SCREEN_MIDDLE];
-                CTrend *senior = Trends[SCREEN_SENIOR];
+                string name = Trends[SCREEN_JUNIOR].GetName();
 
-                string name = junior.GetName();
+                if (Trends[SCREEN_MIDDLE].IsEnabled())
+                    name = StringFormat("%s ∷ %s", name, Trends[SCREEN_MIDDLE].GetName());
 
-                if (middle.IsEnabled())
-                    name = StringFormat("%s ∷ %s", name, middle.GetName());
-
-                if (senior.IsEnabled())
-                    name = StringFormat("%s ∷ %s", name, senior.GetName());
+                if (Trends[SCREEN_SENIOR].IsEnabled())
+                    name = StringFormat("%s ∷ %s", name, Trends[SCREEN_SENIOR].GetName());
 
                 if (Type == TENDENCY_TYPE_IMPULSE)
                     name = StringFormat("Impulse ∷ %s", name);
