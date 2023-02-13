@@ -421,7 +421,7 @@ bool IsFloatLevel(const Qunity::Chart::ENUM_FIBO_LEVELS level)
 bool CreateFiboObject(const string name)
 {
     ResetLastError();
-    if (!ObjectCreate(0, name, OBJ_FIBO, 0, NULL, 0.0, NULL, 0.0))
+    if (!ObjectCreate(0, name, OBJ_FIBO, 0, 0, 0.0, 0, 0.0))
         return (bool)Error("Failed to create Fibonacci in %indicator", false);
 
     ObjectSetInteger(0, name, OBJPROP_COLOR, clrNONE);
@@ -464,7 +464,7 @@ bool CreateFiboObject(const string name)
 bool MoveFiboObject(const string name, const double price1, const double price2)
 {
     ResetLastError();
-    if (!ObjectMove(0, name, 0, NULL, price1) || !ObjectMove(0, name, 1, NULL, price2))
+    if (!ObjectMove(0, name, 0, 0, price1) || !ObjectMove(0, name, 1, 0, price2))
         return (bool)Error("Failed to move Fibonacci in %indicator", false);
 
     ChartRedraw();
@@ -507,7 +507,7 @@ bool CreateLevelsObjects(const string name)
         const string lname = CreateLevelName(name, Fibonacci.LevelToString(FiboLevels[index]));
 
         ResetLastError();
-        if (!ObjectCreate(0, lname, OBJ_HLINE, 0, NULL, 0.0))
+        if (!ObjectCreate(0, lname, OBJ_HLINE, 0, 0, 0.0))
             return (bool)Error("Failed to create level in %indicator", false);
 
         if (IsRoundLevel(FiboLevels[index]))
@@ -553,7 +553,7 @@ bool MoveLevelsObjects(const string name)
         const string lname = CreateLevelName(name, Fibonacci.LevelToString(FiboLevels[index]));
 
         ResetLastError();
-        if (!ObjectMove(0, lname, 0, NULL, Fibonacci.GetPrice(FiboLevels[index])))
+        if (!ObjectMove(0, lname, 0, 0, Fibonacci.GetPrice(FiboLevels[index])))
             return (bool)Error("Failed to move level in %indicator", false);
     };
 
