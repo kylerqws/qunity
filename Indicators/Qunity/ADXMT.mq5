@@ -191,6 +191,10 @@ int OnCalculate(
         ArrayInitialize(HighBuffer, EMPTY_VALUE);
         ArrayInitialize(LowBuffer, EMPTY_VALUE);
         ArrayInitialize(CloseBuffer, EMPTY_VALUE);
+
+        ArrayInitialize(BinaryStateBuffer, Qunity::Chart::STATE_MISSING);
+        ArrayInitialize(TrendStateBuffer, Qunity::Chart::STATE_MISSING);
+        ArrayInitialize(ImpulseStateBuffer, Qunity::Chart::STATE_MISSING);
     };
 
     int index = (prev_calculated > 0) ? prev_calculated - 1 : 0;
