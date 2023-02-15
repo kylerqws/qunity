@@ -311,7 +311,7 @@ int OnCalculate(
                     ColorBuffer[jndex] = 4;
         };
 
-        if (Tendency.IsNewBar() && index > 2)
+        if (Tendency.IsNewBar() && index > 1)
         {
             const int jndex = index - 1;
 
