@@ -50,9 +50,9 @@ namespace Qunity
             string Symbols[2];
             ENUM_TIMEFRAMES Timeframes[2];
 
-            bool NewBarFlags[2];
-            int BarShifts[2];
-            datetime BarTimes[2];
+            bool NewBarProcessing, NewBarFlags[2];
+            int LastBarShifts[2], BarShifts[2];
+            datetime LastBarTimes[2], BarTimes[2];
 
             ENUM_STATES LastState, State;
             datetime LastTimes[4], Times[4];
@@ -70,6 +70,34 @@ namespace Qunity
                 ResetLastError();
 
                 return iTime(Symbols[index], Timeframes[index], shift);
+            };
+
+            void UpdateBarInfo(const int &shifts[], const datetime &times[])
+            {
+                NewBarFlags[AREA_INDEX_ENTITY] = (bool)(BarTimes[AREA_INDEX_ENTITY] != times[AREA_INDEX_ENTITY]);
+                NewBarFlags[AREA_INDEX_CHART] = (bool)(BarTimes[AREA_INDEX_CHART] != times[AREA_INDEX_CHART]);
+
+                if (NewBarFlags[AREA_INDEX_CHART])
+                {
+                    NewBarProcessing = false;
+
+                    LastBarShifts[AREA_INDEX_CHART] = BarShifts[AREA_INDEX_CHART];
+                    LastBarTimes[AREA_INDEX_CHART] = BarTimes[AREA_INDEX_CHART];
+                };
+
+                if (NewBarFlags[AREA_INDEX_ENTITY])
+                {
+                    NewBarProcessing = true;
+
+                    LastBarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_ENTITY];
+                    LastBarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_ENTITY];
+                };
+
+                BarShifts[AREA_INDEX_ENTITY] = shifts[AREA_INDEX_ENTITY];
+                BarShifts[AREA_INDEX_CHART] = shifts[AREA_INDEX_CHART];
+
+                BarTimes[AREA_INDEX_ENTITY] = times[AREA_INDEX_ENTITY];
+                BarTimes[AREA_INDEX_CHART] = times[AREA_INDEX_CHART];
             };
 
         protected:
@@ -103,14 +131,29 @@ namespace Qunity
                 return BarShifts[index];
             };
 
+            const int GetLastBarShift(const ENUM_AREA_INDEXES index) const
+            {
+                return LastBarShifts[index];
+            };
+
             const datetime GetBarTime(const ENUM_AREA_INDEXES index) const
             {
                 return BarTimes[index];
             };
 
+            const datetime GetLastBarTime(const ENUM_AREA_INDEXES index) const
+            {
+                return LastBarTimes[index];
+            };
+
             const bool IsNewBarFlag(const ENUM_AREA_INDEXES index) const
             {
                 return NewBarFlags[index];
+            };
+
+            const bool IsNewBarProcessing(void) const
+            {
+                return NewBarProcessing;
             };
 
             const MqlOHLCRequest GetRequest(void) const
@@ -325,14 +368,7 @@ namespace Qunity
                     (times[AREA_INDEX_CHART] = GetBarTime(AREA_INDEX_CHART, shifts[AREA_INDEX_CHART])) == 0)
                     return Error("Failed to get bar opening time", __FUNCTION__);
 
-                NewBarFlags[AREA_INDEX_ENTITY] = (bool)(BarTimes[AREA_INDEX_ENTITY] != times[AREA_INDEX_ENTITY]);
-                NewBarFlags[AREA_INDEX_CHART] = (bool)(BarTimes[AREA_INDEX_CHART] != times[AREA_INDEX_CHART]);
-
-                BarShifts[AREA_INDEX_ENTITY] = shifts[AREA_INDEX_ENTITY];
-                BarShifts[AREA_INDEX_CHART] = shifts[AREA_INDEX_CHART];
-
-                BarTimes[AREA_INDEX_ENTITY] = times[AREA_INDEX_ENTITY];
-                BarTimes[AREA_INDEX_CHART] = times[AREA_INDEX_CHART];
+                UpdateBarInfo(shifts, times);
 
                 Request.Time = time;
                 Request.Open = open;

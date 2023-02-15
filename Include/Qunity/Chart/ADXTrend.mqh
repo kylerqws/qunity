@@ -24,12 +24,13 @@ namespace Qunity
             int ADXPeriod;
             uchar ADXFilter;
 
+            bool CalcSeniorFlag;
             datetime TimeBuffer[];
             int ADXHandle, BufferIndex, BufferSize;
             uint PreloadDataSeconds, TimeframeSeconds[2];
             double DeductibleStrength, ADXValue, PDIValue, NDIValue, ADXBuffer[], PDIBuffer[], NDIBuffer[];
 
-            const datetime GetLastTickTime(void) const
+            const datetime GetTickTime(void) const
             {
                 return (datetime)SymbolInfoInteger(GetSymbol(AREA_INDEX_ENTITY), SYMBOL_TIME);
             };
@@ -62,9 +63,15 @@ namespace Qunity
         protected:
             const bool Update(void)
             {
-                const datetime stime = GetBarTime(AREA_INDEX_ENTITY),
-                               etime = (datetime)(stime + PreloadDataSeconds),
-                               ttime = GetLastTickTime() - TimeframeSeconds[AREA_INDEX_ENTITY] + 1;
+                datetime stime = GetBarTime(AREA_INDEX_ENTITY),
+                         etime = (datetime)(stime + PreloadDataSeconds),
+                         ttime = GetTickTime() - TimeframeSeconds[AREA_INDEX_ENTITY] + 1;
+
+                if (CalcSeniorFlag)
+                    stime = GetLastBarTime(AREA_INDEX_ENTITY);
+
+                if (IsNewBarProcessing())
+                    stime -= 1;
 
                 while (BufferIndex < BufferSize && TimeBuffer[BufferIndex] < stime && !IsStopped())
                     BufferIndex++;
@@ -132,6 +139,8 @@ namespace Qunity
 
                 if (ADXHandle == INVALID_HANDLE)
                     return Error("Failed to initialize ADX indicator", __FUNCTION__);
+
+                CalcSeniorFlag = (bool)(GetTimeframe(AREA_INDEX_ENTITY) != GetTimeframe(AREA_INDEX_CHART));
 
                 TimeframeSeconds[AREA_INDEX_ENTITY] = PeriodSeconds(GetTimeframe(AREA_INDEX_ENTITY));
                 TimeframeSeconds[AREA_INDEX_CHART] = PeriodSeconds(GetTimeframe(AREA_INDEX_CHART));
