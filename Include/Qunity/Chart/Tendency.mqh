@@ -2,7 +2,6 @@
 #property link "https://vk.com/kylerqws"
 #property version "1.00"
 
-#include <Qunity/Chart/OHLCSeries.mqh>
 #include <Qunity/Chart/Trend.mqh>
 
 namespace Qunity
