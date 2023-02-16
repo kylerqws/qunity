@@ -110,7 +110,7 @@ const int INDICATOR_ID = MathRand();
 uchar FiboSizeLevels;
 Qunity::Chart::ENUM_FIBO_LEVELS FiboLevels[];
 
-int Calculateed = NULL, FiboBarIndex = NULL;
+int Calculated = NULL, FiboBarIndex = NULL;
 double LastFiboPrice1 = NULL, LastFiboPrice2 = NULL;
 string ShortName = NULL, FiboName = NULL, FiboObjectName = NULL;
 
@@ -259,8 +259,8 @@ int OnCalculate(
 {
     if (prev_calculated <= 0)
     {
-        if (Calculateed == rates_total)
-            return Calculateed;
+        if (Calculated == rates_total)
+            return Calculated;
 
         ArrayInitialize(StateBuffer, EMPTY_VALUE);
         ArrayInitialize(StrengthBuffer, EMPTY_VALUE);
@@ -342,7 +342,7 @@ int OnCalculate(
         };
     };
 
-    return Calculateed = index;
+    return Calculated = index;
 };
 
 //+--------------------------------------------------------------------------------------------------------------------+

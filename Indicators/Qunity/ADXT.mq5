@@ -66,7 +66,7 @@ input Qunity::ENUM_LOG_LEVELS LogLevel = Qunity::LOG_LEVEL_NO;                //
 Qunity::CLogger Logger;
 Qunity::Chart::CADXTrend Trend;
 
-int Calculateed = NULL;
+int Calculated = NULL;
 string ShortName = NULL;
 
 double StateBuffer[], StrengthBuffer[], ColorBuffer[], OpenBuffer[], HighBuffer[], LowBuffer[], CloseBuffer[];
@@ -135,8 +135,8 @@ int OnCalculate(
 {
     if (prev_calculated <= 0)
     {
-        if (Calculateed == rates_total)
-            return Calculateed;
+        if (Calculated == rates_total)
+            return Calculated;
 
         ArrayInitialize(StateBuffer, EMPTY_VALUE);
         ArrayInitialize(StrengthBuffer, EMPTY_VALUE);
@@ -165,7 +165,7 @@ int OnCalculate(
         index++;
     };
 
-    return Calculateed = index;
+    return Calculated = index;
 };
 
 //+--------------------------------------------------------------------------------------------------------------------+
