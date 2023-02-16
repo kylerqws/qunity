@@ -19,11 +19,6 @@
 #property indicator_buffers 10
 #property indicator_plots 6
 
-#property indicator_separate_window
-#property indicator_minimum 0
-#property indicator_buffers 10
-#property indicator_plots 6
-
 #property indicator_label1 SHORT_NAME " ∷ Direction"
 #property indicator_type1 DRAW_NONE
 #property indicator_color1 clrNONE
@@ -86,10 +81,10 @@ input Qunity::Chart::ENUM_FIBO_TYPES FiboRange3Type = Qunity::Chart::FIBO_TYPE_X
 input Qunity::Chart::ENUM_FIBO_TYPES FiboRange4Type = Qunity::Chart::FIBO_TYPE_DISABLE;                  //   • Range #4
 input Qunity::Chart::ENUM_FIBO_TYPES FiboRange5Type = Qunity::Chart::FIBO_TYPE_X236;                     //   • Range #5
 input Qunity::Chart::ENUM_FIBO_TYPES FiboRange6Type = Qunity::Chart::FIBO_TYPE_DISABLE;                  //   • Range #6
-input bool MainLevelsText = true;                                                                        // - Round Levels
-input color MainLevelColor = clrGray;                                                                    //   • Color
-input ENUM_LINE_STYLE MainLevelStyle = STYLE_SOLID;                                                      //   • Style
-input uchar MainLevelWidth = 2;                                                                          //   • Width
+input bool RoundLevelsText = true;                                                                       // - Round Levels
+input color RoundLevelColor = clrGray;                                                                   //   • Color
+input ENUM_LINE_STYLE RoundLevelStyle = STYLE_SOLID;                                                     //   • Style
+input uchar RoundLevelWidth = 2;                                                                         //   • Width
 input bool HalfLevelsText = true;                                                                        // - Half Levels
 input color HalfLevelColor = clrDarkGray;                                                                //   • Color
 input ENUM_LINE_STYLE HalfLevelStyle = STYLE_SOLID;                                                      //   • Style
@@ -222,8 +217,8 @@ int OnInit(void)
             return Error("Failed to copy Fibonacci levels in %indicator", INIT_FAILED);
         };
 
-        FiboObjectName = PrepareObjectName(FiboName);
         FiboSizeLevels = Fibonacci.GetSizeLevels();
+        FiboObjectName = PrepareObjectName(FiboName);
 
         if (!CreateFiboObject(FiboObjectName) || !CreateLevelsObjects(FiboObjectName))
             Info("Non-critical error in %indicator");
@@ -332,7 +327,7 @@ int OnCalculate(
             price2 = HighBuffer[FiboBarIndex];
         };
 
-        if (price1 != LastFiboPrice1 && price2 != LastFiboPrice2)
+        if (price1 != LastFiboPrice1 || price2 != LastFiboPrice2)
         {
             if (!Fibonacci.Refresh((LastFiboPrice1 = price1), (LastFiboPrice2 = price2)))
                 return Error("Failed to refresh Fibonacci in %indicator", FiboBarIndex);
@@ -435,7 +430,7 @@ bool CreateFiboObject(const string name)
         ObjectSetDouble(0, name, OBJPROP_LEVELVALUE, index, NULL);
         ObjectSetString(0, name, OBJPROP_LEVELTEXT, index, NULL);
 
-        if (IsRoundLevel(FiboLevels[index]) && !MainLevelsText)
+        if (IsRoundLevel(FiboLevels[index]) && !RoundLevelsText)
             continue;
 
         if (IsHalfLevel(FiboLevels[index]) && !HalfLevelsText)
@@ -512,9 +507,9 @@ bool CreateLevelsObjects(const string name)
 
         if (IsRoundLevel(FiboLevels[index]))
         {
-            ObjectSetInteger(0, lname, OBJPROP_COLOR, MainLevelColor);
-            ObjectSetInteger(0, lname, OBJPROP_STYLE, MainLevelStyle);
-            ObjectSetInteger(0, lname, OBJPROP_WIDTH, MainLevelWidth);
+            ObjectSetInteger(0, lname, OBJPROP_COLOR, RoundLevelColor);
+            ObjectSetInteger(0, lname, OBJPROP_STYLE, RoundLevelStyle);
+            ObjectSetInteger(0, lname, OBJPROP_WIDTH, RoundLevelWidth);
 
             continue;
         };
