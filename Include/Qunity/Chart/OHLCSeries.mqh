@@ -281,8 +281,13 @@ namespace Qunity
 
             void DeinitEntity(void)
             {
-                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] = 0;
-                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] = 0;
+                NewBarProcessing = false;
+
+                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] =
+                    LastBarShifts[AREA_INDEX_ENTITY] = LastBarShifts[AREA_INDEX_CHART] = 0;
+
+                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] =
+                    LastBarTimes[AREA_INDEX_ENTITY] = LastBarTimes[AREA_INDEX_CHART] = 0;
             };
 
             void ResetEntity(void)
@@ -307,8 +312,11 @@ namespace Qunity
                 Symbols[AREA_INDEX_ENTITY] = Symbols[AREA_INDEX_CHART] = _Symbol;
                 Timeframes[AREA_INDEX_ENTITY] = Timeframes[AREA_INDEX_CHART] = _Period;
 
-                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] = 0;
-                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] = 0;
+                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] =
+                    LastBarShifts[AREA_INDEX_ENTITY] = LastBarShifts[AREA_INDEX_CHART] = 0;
+
+                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] =
+                    LastBarTimes[AREA_INDEX_ENTITY] = LastBarTimes[AREA_INDEX_CHART] = 0;
 
                 Times[OHLC_INDEX_OPEN] = Times[OHLC_INDEX_HIGH] =
                     Times[OHLC_INDEX_LOW] = Times[OHLC_INDEX_CLOSE] =
