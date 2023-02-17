@@ -143,8 +143,10 @@ namespace Qunity
 
                     for (uchar index = 0; index < SCREENS_COUNT && !IsStopped(); index++)
                     {
-                        if (Trends[index].IsEnabled() &&
-                            (openTime = Trends[index].GetTime(OHLC_INDEX_OPEN)) < request.Time)
+                        if (!Trends[index].IsEnabled())
+                            continue;
+
+                        if ((openTime = Trends[index].GetTime(OHLC_INDEX_OPEN)) < request.Time)
                         {
                             request.Time = openTime;
 
