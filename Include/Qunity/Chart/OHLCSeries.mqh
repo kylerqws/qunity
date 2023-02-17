@@ -151,11 +151,6 @@ namespace Qunity
                 return NewBarFlags[index];
             };
 
-            const bool IsNewBarProcessing(void) const
-            {
-                return NewBarProcessing;
-            };
-
             const MqlOHLCRequest GetRequest(void) const
             {
                 return Request;
@@ -393,6 +388,11 @@ namespace Qunity
             const bool IsNewBar(void) const
             {
                 return NewBarFlags[AREA_INDEX_ENTITY];
+            };
+
+            const bool IsNewBarProcessing(void) const
+            {
+                return NewBarProcessing;
             };
 
             const ENUM_STATES GetState(void) const
