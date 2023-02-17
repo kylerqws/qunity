@@ -100,10 +100,8 @@ namespace Qunity
                     (bool)(States[STATE_INDEX_TREND] != STATE_MISSING &&
                            States[STATE_INDEX_TREND] != LastStates[STATE_INDEX_BINARY]);
 
-                if (IsNewBarFlag(AREA_INDEX_ENTITY))
-                    StateChanges[STATE_INDEX_IMPULSE] = false;
-
-                if (StateChanges[STATE_INDEX_BINARY])
+                StateChanges[STATE_INDEX_IMPULSE] = false;
+                if (StateChanges[STATE_INDEX_BINARY] && IsNewBarProcessing())
                     StateChanges[STATE_INDEX_IMPULSE] =
                         (bool)(States[STATE_INDEX_BINARY] = States[STATE_INDEX_TREND]);
 
