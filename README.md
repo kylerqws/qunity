@@ -11,5 +11,4 @@ Corrected parameters for D1 timeframe of 5-day trading week is T8&nbsp;K22&nbsp;
 
 ## ADX Multi-Timeframe Trend with Fibonacci levels (ADXMT-F)
 
-Impulsive type of indicator is used.
-For futures, only two timeframes are used: H4 and D1. For the H4 timeframe, an interval of two days (8&nbsp;candles) is taken, and for the D1, an interval of one week (5&nbsp;candles). Both screens use Welles Wilder's ADX indicator, and a filter of 20.
+Trading system uses impulsive type of indicator. It uses two timeframes for futures: H4 and D1. H4 timeframe is for two days interval (8&nbsp;candles), D1 is for one week interval (5&nbsp;candles). Both screens use Welles Wilder's ADX indicator, and a filter of 20.
