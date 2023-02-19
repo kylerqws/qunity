@@ -306,7 +306,7 @@ int OnCalculate(
                     ColorBuffer[jndex] = 4;
         };
 
-        if (ShowFiboLevels && index > 1)
+        if (ShowFiboLevels && index > 0)
         {
             const int jndex = index - 1;
 
