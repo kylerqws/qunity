@@ -273,6 +273,9 @@ namespace Qunity
             {
                 for (uchar range = 0; range < RANGES_COUNT && !IsStopped(); range++)
                 {
+                    if (Types[range] == FIBO_TYPE_DISABLE)
+                        continue;
+
                     for (uchar level = 0; level < LEVELS_COUNT && !IsStopped(); level++)
                     {
                         if (!ValidateLevel((ENUM_FIBO_RANGES)range, (ENUM_FIBO_LEVELS)level))

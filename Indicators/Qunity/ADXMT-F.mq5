@@ -7,7 +7,7 @@
 //+--------------------------------------------------------------------------------------------------------------------+
 #property copyright "Copyright 2022 - 2023, kyleRQWS@gmail.com"
 #property link "https://vk.com/kylerqws"
-#property version "1.00"
+#property version "1.01"
 
 #define SHORT_NAME "ADXMT-F"
 #define INDICATOR_NAME "Qunity ADXMT-F"
@@ -427,8 +427,12 @@ bool CreateFiboObject(const string name)
 
     for (uchar index = 0; index < FiboSizeLevels && !IsStopped(); index++)
     {
-        ObjectSetDouble(0, name, OBJPROP_LEVELVALUE, index, NULL);
-        ObjectSetString(0, name, OBJPROP_LEVELTEXT, index, NULL);
+        const double levelValue = Fibonacci.LevelToFactor(FiboLevels[index]);
+        const string levelText = StringFormat("%s  ", Fibonacci.LevelToString(FiboLevels[index]));
+
+        ObjectSetInteger(0, name, OBJPROP_LEVELCOLOR, index, clrNONE);
+        ObjectSetDouble(0, name, OBJPROP_LEVELVALUE, index, levelValue);
+        ObjectSetString(0, name, OBJPROP_LEVELTEXT, index, "");
 
         if (IsRoundLevel(FiboLevels[index]) && !RoundLevelsText)
             continue;
@@ -439,12 +443,6 @@ bool CreateFiboObject(const string name)
         if (IsFloatLevel(FiboLevels[index]) && !FloatLevelsText)
             continue;
 
-        ObjectSetInteger(0, name, OBJPROP_LEVELCOLOR, index, clrNONE);
-
-        const double levelValue = Fibonacci.LevelToFactor(FiboLevels[index]);
-        const string levelText = StringFormat("%s  ", Fibonacci.LevelToString(FiboLevels[index]));
-
-        ObjectSetDouble(0, name, OBJPROP_LEVELVALUE, index, levelValue);
         ObjectSetString(0, name, OBJPROP_LEVELTEXT, index, levelText);
     };
 
