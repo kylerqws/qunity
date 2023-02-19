@@ -79,7 +79,7 @@ Qunity::CLogger Logger;
 Qunity::Chart::CADXTrend Junior, Middle, Senior;
 Qunity::Chart::CTendency Tendency;
 
-int Calculateed = NULL;
+int Calculated = NULL;
 string ShortName = NULL;
 
 double BinaryStateBuffer[], TrendStateBuffer[], ImpulseStateBuffer[];
@@ -181,8 +181,8 @@ int OnCalculate(
 {
     if (prev_calculated <= 0)
     {
-        if (Calculateed == rates_total)
-            return Calculateed;
+        if (Calculated == rates_total)
+            return Calculated;
 
         ArrayInitialize(StateBuffer, EMPTY_VALUE);
         ArrayInitialize(StrengthBuffer, EMPTY_VALUE);
@@ -236,7 +236,7 @@ int OnCalculate(
         index++;
     };
 
-    return Calculateed = index;
+    return Calculated = index;
 };
 
 //+--------------------------------------------------------------------------------------------------------------------+

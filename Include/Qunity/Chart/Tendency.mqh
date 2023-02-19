@@ -2,7 +2,6 @@
 #property link "https://vk.com/kylerqws"
 #property version "1.00"
 
-#include <Qunity/Chart/OHLCSeries.mqh>
 #include <Qunity/Chart/Trend.mqh>
 
 namespace Qunity
@@ -101,7 +100,7 @@ namespace Qunity
                     (bool)(States[STATE_INDEX_TREND] != STATE_MISSING &&
                            States[STATE_INDEX_TREND] != LastStates[STATE_INDEX_BINARY]);
 
-                if (IsNewBarFlag(AREA_INDEX_ENTITY))
+                if (IsNewBarFlag(AREA_INDEX_CHART))
                     StateChanges[STATE_INDEX_IMPULSE] = false;
 
                 if (StateChanges[STATE_INDEX_BINARY])
@@ -144,8 +143,10 @@ namespace Qunity
 
                     for (uchar index = 0; index < SCREENS_COUNT && !IsStopped(); index++)
                     {
-                        if (Trends[index].IsEnabled() &&
-                            (openTime = Trends[index].GetTime(OHLC_INDEX_OPEN)) < request.Time)
+                        if (!Trends[index].IsEnabled())
+                            continue;
+
+                        if ((openTime = Trends[index].GetTime(OHLC_INDEX_OPEN)) < request.Time)
                         {
                             request.Time = openTime;
 
@@ -190,7 +191,7 @@ namespace Qunity
                 CTrend *senior = Trends[SCREEN_SENIOR];
 
                 if (!CheckPointer(junior) || !CheckPointer(middle) || !CheckPointer(senior))
-                    return Error("Invalid trend(s) object pointer in entity dependency", __FUNCTION__);
+                    return Error("Invalid trend object pointer in entity dependency", __FUNCTION__);
 
                 if (junior.IsInitialized() || middle.IsInitialized() || senior.IsInitialized())
                     return Error("Trend object(s) mustn't be initialized", __FUNCTION__);

@@ -182,14 +182,15 @@ namespace Qunity
             MqlFiboRequest Request;
             ENUM_FIBO_TYPES Types[6];
 
+            uchar SizeLevels;
+            ENUM_FIBO_LEVELS Levels[];
+
             string LevelStrings[42];
             double LevelFactors[42];
 
-            uchar SizeLevels;
-            ENUM_FIBO_LEVELS Levels[];
             double Prices[42];
 
-            const bool ValidateLevel(const ENUM_FIBO_RANGES range, const ENUM_FIBO_LEVELS level)
+            const bool ValidateLevel(const ENUM_FIBO_RANGES range, const ENUM_FIBO_LEVELS level) const
             {
                 if (Types[range] == FIBO_TYPE_DISABLE)
                     return false;
@@ -216,9 +217,9 @@ namespace Qunity
                 if (StringSplit(strType, StringGetCharacter("_", 0), strLevels) <= 0)
                     return Error("Failed to split string by '_' character", __FUNCTION__);
 
-                const ushort size = (ushort)ArraySize(strLevels);
+                const uchar size = (uchar)ArraySize(strLevels);
 
-                for (ushort index = 0; index < size && !IsStopped(); index++)
+                for (uchar index = 0; index < size && !IsStopped(); index++)
                     if (strLevel == strLevels[index])
                         return true;
 
@@ -231,12 +232,18 @@ namespace Qunity
 
                 ResetLastError();
                 if (ArrayResize(Levels, newSize, 42) < newSize)
-                    return Error("Failed to resize 'Levels' array", __FUNCTION__);
+                    return Error("Failed to resize Fibonacci levels array", __FUNCTION__);
 
                 Levels[newSize - 1] = level;
                 SizeLevels = newSize;
 
                 return true;
+            };
+
+            void UpdateRequest(const double price1, const double price2)
+            {
+                Request.Price1 = price1;
+                Request.Price2 = price2;
             };
 
         protected:
@@ -377,7 +384,7 @@ namespace Qunity
 
                 ResetLastError();
                 if (ArrayCopy(levels, Levels) < SizeLevels)
-                    return Error("Failed to copy 'Levels' to inputted array", __FUNCTION__);
+                    return Error("Failed to copy Fibonacci levels to inputted array", __FUNCTION__);
 
                 return true;
             };
@@ -387,8 +394,7 @@ namespace Qunity
                 if (!IsEnabled() || !IsInitialized())
                     return true;
 
-                Request.Price1 = price1;
-                Request.Price2 = price2;
+                UpdateRequest(price1, price2);
 
                 if (!UpdateEntity())
                     return Error("Failed to update entity data", __FUNCTION__);

@@ -50,9 +50,9 @@ namespace Qunity
             string Symbols[2];
             ENUM_TIMEFRAMES Timeframes[2];
 
-            bool NewBarFlags[2];
-            int BarShifts[2];
-            datetime BarTimes[2];
+            bool NewBarProcessing, NewBarFlags[2];
+            int LastBarShifts[2], BarShifts[2];
+            datetime LastBarTimes[2], BarTimes[2];
 
             ENUM_STATES LastState, State;
             datetime LastTimes[4], Times[4];
@@ -70,6 +70,44 @@ namespace Qunity
                 ResetLastError();
 
                 return iTime(Symbols[index], Timeframes[index], shift);
+            };
+
+            void UpdateBarInfo(const int &shifts[], const datetime &times[])
+            {
+                NewBarFlags[AREA_INDEX_ENTITY] = (bool)(BarTimes[AREA_INDEX_ENTITY] != times[AREA_INDEX_ENTITY]);
+                NewBarFlags[AREA_INDEX_CHART] = (bool)(BarTimes[AREA_INDEX_CHART] != times[AREA_INDEX_CHART]);
+
+                if (NewBarFlags[AREA_INDEX_CHART])
+                {
+                    NewBarProcessing = false;
+
+                    LastBarShifts[AREA_INDEX_CHART] = BarShifts[AREA_INDEX_CHART];
+                    LastBarTimes[AREA_INDEX_CHART] = BarTimes[AREA_INDEX_CHART];
+                };
+
+                if (NewBarFlags[AREA_INDEX_ENTITY])
+                {
+                    NewBarProcessing = true;
+
+                    LastBarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_ENTITY];
+                    LastBarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_ENTITY];
+                };
+
+                BarShifts[AREA_INDEX_ENTITY] = shifts[AREA_INDEX_ENTITY];
+                BarShifts[AREA_INDEX_CHART] = shifts[AREA_INDEX_CHART];
+
+                BarTimes[AREA_INDEX_ENTITY] = times[AREA_INDEX_ENTITY];
+                BarTimes[AREA_INDEX_CHART] = times[AREA_INDEX_CHART];
+            };
+
+            void UpdateRequest(const datetime time,
+                               const double open, const double high, const double low, const double close)
+            {
+                Request.Time = time;
+                Request.Open = open;
+                Request.High = high;
+                Request.Low = low;
+                Request.Close = close;
             };
 
         protected:
@@ -103,9 +141,19 @@ namespace Qunity
                 return BarShifts[index];
             };
 
+            const int GetLastBarShift(const ENUM_AREA_INDEXES index) const
+            {
+                return LastBarShifts[index];
+            };
+
             const datetime GetBarTime(const ENUM_AREA_INDEXES index) const
             {
                 return BarTimes[index];
+            };
+
+            const datetime GetLastBarTime(const ENUM_AREA_INDEXES index) const
+            {
+                return LastBarTimes[index];
             };
 
             const bool IsNewBarFlag(const ENUM_AREA_INDEXES index) const
@@ -238,12 +286,21 @@ namespace Qunity
 
             void DeinitEntity(void)
             {
-                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] = 0;
-                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] = 0;
+                CEntity::DeinitEntity();
+
+                NewBarProcessing = false;
+
+                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] =
+                    LastBarShifts[AREA_INDEX_ENTITY] = LastBarShifts[AREA_INDEX_CHART] = 0;
+
+                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] =
+                    LastBarTimes[AREA_INDEX_ENTITY] = LastBarTimes[AREA_INDEX_CHART] = 0;
             };
 
             void ResetEntity(void)
             {
+                CEntity::ResetEntity();
+
                 State = LastState = STATE_MISSING;
 
                 Times[OHLC_INDEX_OPEN] = Times[OHLC_INDEX_HIGH] =
@@ -264,8 +321,11 @@ namespace Qunity
                 Symbols[AREA_INDEX_ENTITY] = Symbols[AREA_INDEX_CHART] = _Symbol;
                 Timeframes[AREA_INDEX_ENTITY] = Timeframes[AREA_INDEX_CHART] = _Period;
 
-                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] = 0;
-                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] = 0;
+                BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] =
+                    LastBarShifts[AREA_INDEX_ENTITY] = LastBarShifts[AREA_INDEX_CHART] = 0;
+
+                BarTimes[AREA_INDEX_ENTITY] = BarTimes[AREA_INDEX_CHART] =
+                    LastBarTimes[AREA_INDEX_ENTITY] = LastBarTimes[AREA_INDEX_CHART] = 0;
 
                 Times[OHLC_INDEX_OPEN] = Times[OHLC_INDEX_HIGH] =
                     Times[OHLC_INDEX_LOW] = Times[OHLC_INDEX_CLOSE] =
@@ -325,20 +385,8 @@ namespace Qunity
                     (times[AREA_INDEX_CHART] = GetBarTime(AREA_INDEX_CHART, shifts[AREA_INDEX_CHART])) == 0)
                     return Error("Failed to get bar opening time", __FUNCTION__);
 
-                NewBarFlags[AREA_INDEX_ENTITY] = (bool)(BarTimes[AREA_INDEX_ENTITY] != times[AREA_INDEX_ENTITY]);
-                NewBarFlags[AREA_INDEX_CHART] = (bool)(BarTimes[AREA_INDEX_CHART] != times[AREA_INDEX_CHART]);
-
-                BarShifts[AREA_INDEX_ENTITY] = shifts[AREA_INDEX_ENTITY];
-                BarShifts[AREA_INDEX_CHART] = shifts[AREA_INDEX_CHART];
-
-                BarTimes[AREA_INDEX_ENTITY] = times[AREA_INDEX_ENTITY];
-                BarTimes[AREA_INDEX_CHART] = times[AREA_INDEX_CHART];
-
-                Request.Time = time;
-                Request.Open = open;
-                Request.High = high;
-                Request.Low = low;
-                Request.Close = close;
+                UpdateBarInfo(shifts, times);
+                UpdateRequest(time, open, high, low, close);
 
                 if (!UpdateEntity())
                     return Error("Failed to update entity data", __FUNCTION__);
@@ -349,6 +397,11 @@ namespace Qunity
             const bool IsNewBar(void) const
             {
                 return NewBarFlags[AREA_INDEX_ENTITY];
+            };
+
+            const bool IsNewBarProcessing(void) const
+            {
+                return NewBarProcessing;
             };
 
             const ENUM_STATES GetState(void) const

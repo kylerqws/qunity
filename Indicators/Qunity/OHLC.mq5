@@ -38,7 +38,7 @@ Qunity::Chart::COHLCSeries OHLCSeries;
 
 const int INDICATOR_ID = MathRand();
 
-int Calculateed = NULL;
+int Calculated = NULL;
 double LastLevelHigh = NULL, LastLevelLow = NULL;
 string ShortName = NULL, LevelHighName = NULL, LevelLowName = NULL;
 
@@ -116,8 +116,8 @@ int OnCalculate(
 {
     if (prev_calculated <= 0)
     {
-        if (Calculateed == rates_total)
-            return Calculateed;
+        if (Calculated == rates_total)
+            return Calculated;
 
         ArrayInitialize(OpenBuffer, EMPTY_VALUE);
         ArrayInitialize(HighBuffer, EMPTY_VALUE);
@@ -155,7 +155,7 @@ int OnCalculate(
                 Info("Non-critical error in %indicator");
     };
 
-    return Calculateed = index;
+    return Calculated = index;
 };
 
 //+--------------------------------------------------------------------------------------------------------------------+
