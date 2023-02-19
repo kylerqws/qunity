@@ -153,6 +153,8 @@ namespace Qunity
 
             void DeinitEntity(void)
             {
+                CTrend::DeinitEntity();
+
                 if (ADXHandle != INVALID_HANDLE)
                     IndicatorRelease(ADXHandle);
 

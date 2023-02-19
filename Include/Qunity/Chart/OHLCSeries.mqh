@@ -100,6 +100,16 @@ namespace Qunity
                 BarTimes[AREA_INDEX_CHART] = times[AREA_INDEX_CHART];
             };
 
+            void UpdateRequest(const datetime time,
+                               const double open, const double high, const double low, const double close)
+            {
+                Request.Time = time;
+                Request.Open = open;
+                Request.High = high;
+                Request.Low = low;
+                Request.Close = close;
+            };
+
         protected:
             void SetState(const ENUM_STATES state)
             {
@@ -276,6 +286,8 @@ namespace Qunity
 
             void DeinitEntity(void)
             {
+                CEntity::DeinitEntity();
+
                 NewBarProcessing = false;
 
                 BarShifts[AREA_INDEX_ENTITY] = BarShifts[AREA_INDEX_CHART] =
@@ -287,6 +299,8 @@ namespace Qunity
 
             void ResetEntity(void)
             {
+                CEntity::ResetEntity();
+
                 State = LastState = STATE_MISSING;
 
                 Times[OHLC_INDEX_OPEN] = Times[OHLC_INDEX_HIGH] =
@@ -372,12 +386,7 @@ namespace Qunity
                     return Error("Failed to get bar opening time", __FUNCTION__);
 
                 UpdateBarInfo(shifts, times);
-
-                Request.Time = time;
-                Request.Open = open;
-                Request.High = high;
-                Request.Low = low;
-                Request.Close = close;
+                UpdateRequest(time, open, high, low, close);
 
                 if (!UpdateEntity())
                     return Error("Failed to update entity data", __FUNCTION__);

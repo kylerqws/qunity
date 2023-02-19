@@ -191,7 +191,7 @@ namespace Qunity
                 CTrend *senior = Trends[SCREEN_SENIOR];
 
                 if (!CheckPointer(junior) || !CheckPointer(middle) || !CheckPointer(senior))
-                    return Error("Invalid trend(s) object pointer in entity dependency", __FUNCTION__);
+                    return Error("Invalid trend object pointer in entity dependency", __FUNCTION__);
 
                 if (junior.IsInitialized() || middle.IsInitialized() || senior.IsInitialized())
                     return Error("Trend object(s) mustn't be initialized", __FUNCTION__);

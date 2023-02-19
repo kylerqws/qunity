@@ -240,6 +240,12 @@ namespace Qunity
                 return true;
             };
 
+            void UpdateRequest(const double price1, const double price2)
+            {
+                Request.Price1 = price1;
+                Request.Price2 = price2;
+            };
+
         protected:
             virtual const bool UpdateEntity(void)
             {
@@ -388,8 +394,7 @@ namespace Qunity
                 if (!IsEnabled() || !IsInitialized())
                     return true;
 
-                Request.Price1 = price1;
-                Request.Price2 = price2;
+                UpdateRequest(price1, price2);
 
                 if (!UpdateEntity())
                     return Error("Failed to update entity data", __FUNCTION__);
