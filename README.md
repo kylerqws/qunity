@@ -7,8 +7,8 @@
 
 ## Ichimoku Kinko Hyo indicator
 
-Corrected parameters for D1 timeframe of 5-day trading week is T8&nbsp;K22&nbsp;S44. To get daily lines on H4 timeframe chart, you need to multiply the daily parameters by 4 (number of H4 candles in one day), the result is T32&nbsp;K88&nbsp;S176.
+Corrected parameters for D1 timeframe of 5-day trading week is T8&nbsp;K22&nbsp;S44. To get daily lines on H1 timeframe chart, you need to multiply the daily parameters by 14 (number of H1 candles in one day), the result is T112&nbsp;K308&nbsp;S616.
 
 ## ADX Multi-Timeframe Trend indicator with Fibonacci levels (ADXMT-F)
 
-You need use impulsive type of indicator and two timeframes (H4 and D1) for trading by futures. H4 timeframe is for two days interval (8&nbsp;candles) and D1 is for one week interval (5&nbsp;candles). Both screens use Welles Wilder's ADX indicator, and a filter of 20.
+You need use impulsive type of indicator and three timeframes (H1, H4 and D1) for trading by futures. H1 timeframe is for one day interval (14&nbsp;candles), H4 timeframe is for two days interval (8&nbsp;candles) and D1 is for one week interval (5&nbsp;candles). Screens use Welles Wilder's ADX indicator, and a filter of 20.
