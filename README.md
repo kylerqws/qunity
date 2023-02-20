@@ -18,6 +18,6 @@ You need use impulsive type of indicator and three timeframes (H1, H4 and D1) fo
 20.02.23
 
 |  Basis  | Tick Price | Starting Margin | Currency |
-| ------- | ----------:| ---------------:| --------:|
-| **Si**  |          1 |          12 000 |      RUR |
-| **MXI** |        0.5 |           5 000 |      RUR |
+|:------- | ----------:| ---------------:| --------:|
+| Si      |          1 |          12 000 |      RUR |
+| MXI     |        0.5 |           5 000 |      RUR |
