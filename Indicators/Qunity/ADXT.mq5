@@ -57,11 +57,11 @@
 
 #include <Qunity/Chart/ADXTrend.mqh>
 
-input ENUM_TIMEFRAMES CalcTimeframe = PERIOD_CURRENT;                         // Calculate Timeframe
-input Qunity::Chart::ENUM_ADX_TYPES ADXType = Qunity::Chart::ADX_TYPE_WILDER; //   • ADX Type
-input int ADXPeriod = 14;                                                     //   • ADX Period
-input uchar ADXFilter = 15;                                                   //   • ADX Filter
-input Qunity::ENUM_LOG_LEVELS LogLevel = Qunity::LOG_LEVEL_NO;                // Logging
+input ENUM_TIMEFRAMES CalcTimeframe = PERIOD_CURRENT;                          // Calculate Timeframe
+input Qunity::Chart::ENUM_ADX_TYPES ADXType = Qunity::Chart::ADX_TYPE_DEFAULT; //   • ADX Type
+input int ADXPeriod = 14;                                                      //   • ADX Period
+input uchar ADXFilter = 0;                                                     //   • ADX Filter
+input Qunity::ENUM_LOG_LEVELS LogLevel = Qunity::LOG_LEVEL_NO;                 // Logging
 
 Qunity::CLogger Logger;
 Qunity::Chart::CADXTrend Trend;
