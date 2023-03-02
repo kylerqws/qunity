@@ -12,7 +12,7 @@
 #define SHORT_NAME "OHLC"
 #define INDICATOR_NAME "Qunity OHLC"
 
-#property description INDICATOR_NAME " indicator display OHLC series to multi-timeframe indicators"
+#property description INDICATOR_NAME " indicator displays OHLC series of higher timeframes"
 
 #property indicator_chart_window
 #property indicator_buffers 5
