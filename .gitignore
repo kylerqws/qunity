@@ -5,19 +5,12 @@
 
 !/Include
 !/Indicators
-!/Profiles
 
 /Include/*
 !/Include/Qunity
 
 /Indicators/*
 !/Indicators/Qunity
-
-/Profiles/*
-!/Profiles/Templates
-
-/Profiles/Templates/*
-!/Profiles/Templates/Qunity Trading System.tpl
 
 !.gitignore
 !logo.png
