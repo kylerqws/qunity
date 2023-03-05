@@ -7,12 +7,12 @@
 //+--------------------------------------------------------------------------------------------------------------------+
 #property copyright "Copyright 2022 - 2023, kyleRQWS@gmail.com"
 #property link "https://vk.com/kylerqws"
-#property version "1.02"
+#property version "1.03"
 
 #define SHORT_NAME "ADXMT-F"
 #define INDICATOR_NAME "Qunity ADXMT-F"
 
-#property description INDICATOR_NAME " is multi-timeframe trend indicator based on the ADX / ADXWilder indicator with Fibonacci levels"
+#property description INDICATOR_NAME " is multi timeframe trend indicator based on the ADX / ADXWilder indicator with Fibonacci levels"
 
 #property indicator_separate_window
 #property indicator_minimum 0
