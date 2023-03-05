@@ -12,7 +12,7 @@
 #define SHORT_NAME "ADXMT-F"
 #define INDICATOR_NAME "Qunity ADXMT-F"
 
-#property description INDICATOR_NAME " indicator is ADXMT indicator with Fibonacci levels"
+#property description INDICATOR_NAME " indicator is ADX Tendency indicator with Fibonacci levels"
 
 #property indicator_separate_window
 #property indicator_minimum 0
