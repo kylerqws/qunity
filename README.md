@@ -58,7 +58,7 @@
 - ADX Type - тип расчета ADX на "Middle" экране, на основании которого происходит расчет;
 - ADX Period - период используемого расчета "Middle" экрана;
 - ADX Filter - фильтр значения ADX на "Middle" экране;
-- Config Screen Middle - включить/выключить "Senior" экран для расчета;
+- Config Screen Senior - включить/выключить "Senior" экран для расчета;
 - ADX Type - тип расчета ADX на "Senior" экране, на основании которого происходит расчет;
 - ADX Period - период используемого расчета "Senior" экрана;
 - ADX Filter - фильтр значения ADX на "Senior" экране;
@@ -104,7 +104,7 @@
 - ADX Type - тип расчета ADX на "Middle" экране, на основании которого происходит расчет;
 - ADX Period - период используемого расчета "Middle" экрана;
 - ADX Filter - фильтр значения ADX на "Middle" экране;
-- Config Screen Middle - включить/выключить "Senior" экран для расчета;
+- Config Screen Senior - включить/выключить "Senior" экран для расчета;
 - ADX Type - тип расчета ADX на "Senior" экране, на основании которого происходит расчет;
 - ADX Period - период используемого расчета "Senior" экрана;
 - ADX Filter - фильтр значения ADX на "Senior" экране;
